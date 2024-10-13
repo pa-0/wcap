@@ -25,36 +25,26 @@ jobs:
         run: |
           cd repo && build.cmd
           mkdir wcap
-          move wcap.exe .\wcap\
+          move wcap.exe .\wcap
 
-      #- name: Checkout wiki
-        #uses: actions/checkout@v3
-        #if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-        #with:
-          #repository: ${{github.repository}}.wiki
-          #path: wiki
-
-      - name: Sign binary
-        uses: DanaBear/code-sign-action@v4
+      - uses: sauravkumarsahoo/sign-files-with-pfx@v1
         with:
           certificate: '${{ secrets.CERTIFICATE }}'
           password: '${{ secrets.PASSWORD }}'
-          folder: 'repo\wcap'
-          recursive: false
+          certificatesha1: '${{ secrets.CERTHASH }}'
+          certificatename: '${{ secrets.CERTNAME }}'
+          folder: 'repo/wcap/'
+          recursive: true
 
       - name: Upload binary
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         shell: cmd
         run: |
-          #copy repo\wcap.exe wiki
-          cd repo\wcap
+          cd repo
+          cd wcap
           7z a wcap.zip wcap.exe
           gh release create v1.0.0 .\wcap.zip --notes "just a mirror-fork" 
         env:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-# cd wiki
-# git config --local user.email "action@github.com"
-# git config --local user.name "GitHub Action"
-# git commit --all --amend --no-edit
-# git push --force-with-lease
+
