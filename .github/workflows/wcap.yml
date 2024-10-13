@@ -48,7 +48,7 @@ jobs:
           cd repo\wcap
           zip wcap.zip wcap.exe ..\README.md
           gh release create v1.0.0 .\wcap.zip --notes "just a mirror-fork" 
-          cd wiki
+          #cd wiki
           #git config --local user.email "action@github.com"
           #git config --local user.name "GitHub Action"
           #git commit --all --amend --no-edit
